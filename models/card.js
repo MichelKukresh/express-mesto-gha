@@ -13,21 +13,23 @@ const cardsSchema = new mongoose.Schema({
     // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
     required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
+
   },
   owner: {
     // у пользователя есть имя — опишем требования к имени в схеме:
-    type: Object, // тип ObjectId
+    type: {}, // тип ObjectId
     required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
   },
   likes: {
     // у пользователя есть имя — опишем требования к имени в схеме:
-    type: Object, // тип ObjectId
+    type: [], // тип ObjectId
     default: [],
   },
   createdAt: {
     // у пользователя есть имя — опишем требования к имени в схеме:
     type: Date,
     default: Date.now,
-  },
+  }
+
 });
 module.exports = mongoose.model('Card', cardsSchema);

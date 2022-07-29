@@ -1,19 +1,20 @@
 const routesCards = require('express').Router(); // создали роутер
-//const Film = require('../models/film');
 
-const Card = require('../models/card');
+const { createCard } = require("../controllers/cards");
+const { allCards } = require("../controllers/cards");
+const { idCards } = require("../controllers/cards");
+const { likesCardPut } = require("../controllers/cards");
+const { likesCardDelete } = require("../controllers/cards");
 
-routesCards.post('/', (req, res) => {
-  res.send(req.body);
-  console.log(req.body);
-});
+routesCards.post('/', createCard);
 
-routesCards.get('/', (req, res) => {
-  //res.send({...req.body, gggg: "ghfghf"});
-  console.log("Привет гет");
-  res.send(req.query);
+routesCards.get('/', allCards);
 
+routesCards.delete('/:id', idCards);
 
-});
+routesCards.put('/:id/likes', likesCardPut);
+routesCards.delete('/:id/likes', likesCardDelete);
 
 module.exports = routesCards; // экспортировали роутер
+
+

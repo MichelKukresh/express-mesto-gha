@@ -1,21 +1,18 @@
-// const express = require('express');
-// const userController = require('../controller/users');
-// const routes = express.Router();
-// routes.get('/', userController.getUsers)
+const routesUsers = require("express").Router(); // создали роутер
 
-const routesUsers = require('express').Router(); // создали роутер
+const { createUser } = require("../controllers/users");
+const { allUsers } = require("../controllers/users");
+const { idUsers } = require("../controllers/users");
+const { updateUsers } = require("../controllers/users");
+const { updateAvatarUsers } = require("../controllers/users");
 
-const User = require('../models/user');
-const { createUser } = require('../controllers/users');
+routesUsers.post("/", createUser); ///есть обработчик
 
-routesUsers.post('/', createUser);
+routesUsers.get("/", allUsers);
 
-routesUsers.get('/', (req, res) => {
-  //res.send({...req.body, gggg: "ghfghf"});
-  console.log("Привет гет");
-  res.send(req.query);
+routesUsers.get("/:id", idUsers);
 
-
-});
+routesUsers.patch('/me', updateUsers);
+routesUsers.patch('/me/avatar', updateAvatarUsers);
 
 module.exports = routesUsers; // экспортировали роутер
