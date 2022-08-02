@@ -16,20 +16,48 @@ const errorMessage = (err, req, res) => {
   }
 };
 
-const errorMessagePutDelLikes = (err, req, res) => {
-  if (err.name === "ValidationError") {
-    res
-      .status(ERROR_CODE)
-      .send({
-        message: "Переданы некорректные данные для постановки/снятии лайка.",
-      });
-  } else if (err.name === "CastError") {
-    res
-      .status(ERROR_ID)
-      .send({ message: "Передан несуществующий _id карточки." });
-  } else {
-    res.status(500).send({ message: "Произошла ошибка" });
+// const errorMessagePutDelLikes = (err, req, res) => {
+//   if (err.name === "ValidationError") {
+//     res
+//       .status(ERROR_CODE)
+//       .send({
+//         message: "Переданы некорректные данные для постановки/снятии лайка.",
+//       });
+//   } else if (err.name === "CastError") {
+//     res
+//       .status(ERROR_ID)
+//       .send({ message: "Передан несуществующий _id карточки." });
+//   } else {
+//     res.status(500).send({ message: "Произошла ошибка" });
+//   }
+// };
+
+const errorMessageSwitsh = (err, req, res) => {
+
+  console.log(err.name);
+
+  const errMessage = err.name == "Error" ? err.message : err.name;
+
+  switch (errMessage) {
+    case "ValidationError":
+      res
+        .status(ERROR_CODE)
+        .send({ message: "Переданы некорректные данные для постановки/снятии лайка." });
+      break;
+    case "CastError":
+      res.status(ERROR_CODE).send({ message: "Передан некорректный _id карточки." });
+      break;
+    case 'NonExistentCard':
+      res.status(ERROR_ID).send({ message: "Передан несуществующий _id карточки." });
+      break;
+
+    default:
+      res.status(500).send({ message: "Произошла ошибка" });
+    break
   }
+
+
+
 };
 
 module.exports.createCard = (req, res) => {
@@ -53,14 +81,16 @@ module.exports.idCards = (req, res) => {
     .catch((err) => errorMessage(err, req, res));
 };
 
+///
 module.exports.likesCardPut = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true }
   )
+  .orFail(new Error("NonExistentCard"))
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorMessagePutDelLikes(err, req, res));
+    .catch((err) => errorMessageSwitsh(err, req, res));
 };
 
 module.exports.likesCardDelete = (req, res) => {
@@ -69,6 +99,7 @@ module.exports.likesCardDelete = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true }
   )
+  .orFail(new Error("NonExistentCard"))
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorMessagePutDelLikes(err, req, res));
+    .catch((err) => errorMessageSwitsh(err, req, res));
 };
