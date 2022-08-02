@@ -19,6 +19,29 @@ const errorMessage = (err, req, res, messageErr = "пользователя") =>
   }
 };
 
+const errorMessageSwitsh = (err, req, res) => { ///
+
+  //console.log(err);
+  const errMessage = (err.name == 'Error') ? err.message : err.name;
+
+ // console.log(errMessage);
+
+//res.send(errMessage);
+  switch (errMessage) {
+    case "NonExistentUser":
+      res
+      .status(ERROR_ID)
+      .send({ message: `Пользователь по указанному id не найден` });
+    break
+    case "CastError":
+      res
+      .status(ERROR_CODE)
+      .send({ message: `Некорректный id пользователя` });
+    break
+  }
+}
+
+
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
@@ -33,12 +56,22 @@ module.exports.allUsers = (req, res) => {
     .catch((err) => res.status(500).send({ message: "Произошла ошибка" }));
 };
 
+// module.exports.idUsers = (req, res) => {
+//   const { id } = req.params;
+//   User.find({ _id: id })
+//     //.orFail(new Error('NonExistentUser'))
+//     .then((user) => res.send(user[0]))
+//     .catch((err) => errorMessageSwitsh(err, req, res)); ///
+// };
+
 module.exports.idUsers = (req, res) => {
   const { id } = req.params;
   User.find({ _id: id })
+    .orFail(new Error('NonExistentUser'))
     .then((user) => res.send(user[0])) //then((user) => res.send({ data: user }))
-    .catch((err) => errorMessage(err, req, res));
+    .catch((err) => errorMessageSwitsh(err, req, res));
 };
+
 
 module.exports.updateUsers = (req, res) => {
   User.findByIdAndUpdate(
@@ -46,7 +79,7 @@ module.exports.updateUsers = (req, res) => {
     { name: req.body.name, about: req.body.about },
     { runValidators: true }
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send( user ))
     .catch((err) => errorMessage(err, req, res));
 };
 
@@ -56,6 +89,6 @@ module.exports.updateAvatarUsers = (req, res) => {
     { avatar: req.body.avatar },
     { runValidators: true }
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user ))
     .catch((err) => errorMessage(err, req, res, (messageErr = "аватара")));
 };
