@@ -77,8 +77,9 @@ module.exports.allCards = (req, res) => {
 //delete
 module.exports.idCards = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
+  .orFail(new Error("NonExistentCard"))
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorMessage(err, req, res));
+    .catch((err) => errorMessageSwitsh(err, req, res));
 };
 
 ///
