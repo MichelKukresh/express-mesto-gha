@@ -17,9 +17,7 @@ const errorMessage = (err, req, res, messageErr = "пользователя") =>
   }
 };
 
-///
 const errorMessageSwitsh = (err, req, res) => {
-
   const errMessage = err.name == "Error" ? err.message : err.name;
 
   switch (errMessage) {
@@ -32,8 +30,8 @@ const errorMessageSwitsh = (err, req, res) => {
       res.status(ERROR_CODE).send({ message: `Некорректный id пользователя` });
       break;
     default:
-        res.status(500).send({ message: "Произошла ошибка" });
-      break
+      res.status(500).send({ message: "Произошла ошибка" });
+      break;
   }
 };
 
