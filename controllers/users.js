@@ -36,7 +36,7 @@ module.exports.allUsers = (req, res) => {
 module.exports.idUsers = (req, res) => {
   const { id } = req.params;
   User.find({ _id: id })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user[0])) //then((user) => res.send({ data: user }))
     .catch((err) => errorMessage(err, req, res));
 };
 
