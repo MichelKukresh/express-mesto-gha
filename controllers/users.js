@@ -42,7 +42,7 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((u) => res.send(
       {
-        id: u.id, name: u.name, about: u.about, avatar: u.avatar,
+        _id: u._id, name: u.name, about: u.about, avatar: u.avatar,
       },
     ))
     .catch((err) => errorMessage(err, req, res));
@@ -60,7 +60,7 @@ module.exports.idUsers = (req, res) => {
     .orFail(new Error('NonExistentUser'))
     .then((u) => res.send(
       {
-        id: u[0].id, name: u[0].name, about: u[0].about, avatar: u[0].avatar,
+        _id: u[0]._id, name: u[0].name, about: u[0].about, avatar: u[0].avatar,
       },
     ))
     .catch((err) => errorMessageSwitsh(err, req, res));
