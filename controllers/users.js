@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const errorMessageSwitsh = require('../errors/errors');
+const errorMessageUser = require('../errors/errors');
 
 // const ERROR_CODE = 400;
 // const ERROR_ID = 404;
@@ -45,13 +45,13 @@ module.exports.createUser = (req, res) => {
         _id: u._id, name: u.name, about: u.about, avatar: u.avatar,
       },
     ))
-    .catch((err) => errorMessageSwitsh(err, req, res));
+    .catch((err) => errorMessageUser(err, req, res));
 };
 
 module.exports.allUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch((err) => errorMessageSwitsh(err, req, res));
+    .catch((err) => errorMessageUser(err, req, res));
 };
 
 module.exports.idUsers = (req, res) => {
@@ -63,7 +63,7 @@ module.exports.idUsers = (req, res) => {
         _id: u[0]._id, name: u[0].name, about: u[0].about, avatar: u[0].avatar,
       },
     ))
-    .catch((err) => errorMessageSwitsh(err, req, res));
+    .catch((err) => errorMessageUser(err, req, res));
 };
 
 module.exports.updateUsers = (req, res) => {
@@ -73,7 +73,7 @@ module.exports.updateUsers = (req, res) => {
     { runValidators: true, new: true },
   )
     .then((user) => res.send(user))
-    .catch((err) => errorMessageSwitsh(err, req, res));
+    .catch((err) => errorMessageUser(err, req, res));
 };
 
 module.exports.updateAvatarUsers = (req, res) => {
@@ -83,5 +83,5 @@ module.exports.updateAvatarUsers = (req, res) => {
     { runValidators: true, new: true },
   )
     .then((user) => res.send(user))
-    .catch((err) => errorMessageSwitsh(err, req, res, 'аватара'));
+    .catch((err) => errorMessageUser(err, req, res, 'аватара'));
 };
