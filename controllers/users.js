@@ -40,7 +40,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ _id: user._id, name: user.name })) // res.send({ data: user }))
+    .then(() => res.send({ name, about, avatar })) // ({id: user.id,name:user.name}))
     .catch((err) => errorMessage(err, req, res));
 };
 

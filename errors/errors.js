@@ -15,7 +15,7 @@ const errorMessageSwitsh = (err, req, res) => {
         .status(ERROR_CODE)
         .send({ message: 'Передан некорректный _id карточки.' });
       break;
-    case 'NonExistentCard':
+    case 'NonExistentUser':
       res
         .status(ERROR_ID)
         .send({ message: 'Передан несуществующий _id карточки.' });
