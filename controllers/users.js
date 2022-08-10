@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const errorMessageSwitsh = require('../errors/errors');
 
 const ERROR_CODE = 400;
 const ERROR_ID = 404;
@@ -17,29 +18,29 @@ const errorMessage = (err, req, res, messageErr = 'пользователя') =>
   }
 };
 
-const errorMessageSwitsh = (err, req, res) => {
-  const errMessage = err.name === 'Error' ? err.message : err.name;
+// const errorMessageSwitsh = (err, req, res) => {
+//   const errMessage = err.name === 'Error' ? err.message : err.name;
 
-  switch (errMessage) {
-    case 'NonExistentUser':
-      res
-        .status(ERROR_ID)
-        .send({ message: 'Пользователь по указанному id не найден' });
-      break;
-    case 'CastError':
-      res.status(ERROR_CODE).send({ message: 'Некорректный id пользователя' });
-      break;
-    default:
-      res.status(500).send({ message: 'Произошла ошибка' });
-      break;
-  }
-};
+//   switch (errMessage) {
+//     case 'NonExistentUser':
+//       res
+//         .status(ERROR_ID)
+//         .send({ message: 'Пользователь по указанному id не найден' });
+//       break;
+//     case 'CastError':
+//       res.status(ERROR_CODE).send({ message: 'Некорректный id пользователя' });
+//       break;
+//     default:
+//       res.status(500).send({ message: 'Произошла ошибка' });
+//       break;
+//   }
+// };
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({ _id: user._id, name: user.name })) // res.send({ data: user }))
     .catch((err) => errorMessage(err, req, res));
 };
 
