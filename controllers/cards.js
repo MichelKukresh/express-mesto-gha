@@ -1,6 +1,6 @@
 const Card = require('../models/card');
 
-const errorMessageCard = require('../errors/errors');
+const { errorMessageCard } = require('../errors/errors');
 
 // const ERROR_CODE = 400;
 // const ERROR_ID = 404;

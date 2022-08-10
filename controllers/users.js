@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const errorMessageUser = require('../errors/errors');
+const { errorMessageUser } = require('../errors/errors');
 
 // const ERROR_CODE = 400;
 // const ERROR_ID = 404;

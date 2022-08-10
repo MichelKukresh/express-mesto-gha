@@ -1,10 +1,10 @@
 const ERROR_CODE = 400;
 const ERROR_ID = 404;
 
-const errorMessageUser = (err, req, res, messageErr = 'пользователя') => {
-  const errMessage = err.name === 'Error' ? err.message : err.name; // для orFail, так как у них Error не отличается, исравнивать можно по mesage
+module.exports.errorMessageUser = (err, req, res, messageErr = 'пользователя') => {
+  const errMessage1 = err.name === 'Error' ? err.message : err.name; // для orFail, так как у них Error не отличается, исравнивать можно по mesage
 
-  switch (errMessage) {
+  switch (errMessage1) {
     case 'ValidationError':
       res.status(ERROR_CODE).send({
         message: `Переданы некорректные данные при создании ${messageErr}`,
@@ -27,11 +27,10 @@ const errorMessageUser = (err, req, res, messageErr = 'пользователя'
   }
 };
 
-module.exports = errorMessageUser;
+// module.exports = errorMessageUser;
 
-const errorMessageCard = (err, req, res) => {
+module.exports.errorMessageCard = (err, req, res) => {
   const errMessage = err.name === 'Error' ? err.message : err.name;
-
   switch (errMessage) {
     case 'ValidationError':
       res.status(ERROR_CODE).send({
@@ -55,4 +54,4 @@ const errorMessageCard = (err, req, res) => {
   }
 };
 
-module.exports = errorMessageCard;
+// module.exports = errorMessageCard;
