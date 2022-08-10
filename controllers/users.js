@@ -40,7 +40,11 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then(() => res.send({ name, about, avatar })) // ({id: user.id,name:user.name}))
+    .then((u) => res.send(
+      {
+        id: u.id, name: u.name, about: u.about, avatar: u.avatar,
+      },
+    ))
     .catch((err) => errorMessage(err, req, res));
 };
 
@@ -54,7 +58,11 @@ module.exports.idUsers = (req, res) => {
   const { id } = req.params;
   User.find({ _id: id })
     .orFail(new Error('NonExistentUser'))
-    .then((user) => res.send(user[0]))
+    .then((u) => res.send(
+      {
+        id: u[0].id, name: u[0].name, about: u[0].about, avatar: u[0].avatar,
+      },
+    ))
     .catch((err) => errorMessageSwitsh(err, req, res));
 };
 
