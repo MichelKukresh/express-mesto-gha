@@ -1,51 +1,20 @@
 const User = require('../models/user');
 const { errorMessageUser } = require('../errors/errors');
 
-// const ERROR_CODE = 400;
-// const ERROR_ID = 404;
-// const errorMessage = (err, req, res, messageErr = 'пользователя') => {
-//   if (err.name === 'ValidationError') {
-//     res.status(ERROR_CODE).send({
-//       message: `Переданы некорректные данные при создании ${messageErr}`,
-//     });
-//   } else if (err.name === 'CastError') {
-//     const id = req.params.id === undefined ? req.user._id : req.params.id;
-//     res
-//       .status(ERROR_ID)
-//       .send({ message: `Пользователь по указанному ${id} не найден` });
-//   } else {
-//     res.status(500).send({ message: 'Произошла ошибка' });
-//   }
-// };
-
-// const errorMessageSwitsh = (err, req, res) => {
-//   const errMessage = err.name === 'Error' ? err.message : err.name;
-
-//   switch (errMessage) {
-//     case 'NonExistentUser':
-//       res
-//         .status(ERROR_ID)
-//         .send({ message: 'Пользователь по указанному id не найден' });
-//       break;
-//     case 'CastError':
-//       res.status(ERROR_CODE).send({ message: 'Некорректный id пользователя' });
-//       break;
-//     default:
-//       res.status(500).send({ message: 'Произошла ошибка' });
-//       break;
-//   }
-// };
-
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((u) => res.send(
-      {
-        _id: u._id, name: u.name, about: u.about, avatar: u.avatar,
-      },
-    ))
-    .catch((err) => errorMessageUser(err, req, res));
+  User.create({
+    name, about, avatar, email, password,
+  })
+    .then((u) => res.send({
+      _id: u._id,
+      name: u.name,
+      about: u.about,
+      avatar: u.avatar,
+    })).catch((err) => errorMessageUser(err, req, res));
 };
 
 module.exports.allUsers = (req, res) => {
@@ -58,12 +27,12 @@ module.exports.idUsers = (req, res) => {
   const { id } = req.params;
   User.find({ _id: id })
     .orFail(new Error('NonExistentUser'))
-    .then((u) => res.send(
-      {
-        _id: u[0]._id, name: u[0].name, about: u[0].about, avatar: u[0].avatar,
-      },
-    ))
-    .catch((err) => errorMessageUser(err, req, res));
+    .then((u) => res.send({
+      _id: u[0]._id,
+      name: u[0].name,
+      about: u[0].about,
+      avatar: u[0].avatar,
+    })).catch((err) => errorMessageUser(err, req, res));
 };
 
 module.exports.updateUsers = (req, res) => {
