@@ -10,8 +10,11 @@ const helmet = require('helmet');
 
 const mongoose = require('mongoose');
 
+const { createUser, login } = require('./controllers/users');
+
 const routesCards = require('./routes/cards');
 const routesUsers = require('./routes/users');
+const auth = require('./middlewares/auth');
 
 const app = express();
 
@@ -31,16 +34,22 @@ app.use(express.json());
 // используем устанавливаем лимитер для исключения DoS атак
 app.use(limiter);
 app.use(helmet());
-app.use((req, res, next) => {
-  req.user = {
-    _id: '62e2b222311f2beb3b073f2b', // вставьте сюда _id созданного в предыдущем пункте пользователя 62e2b222311f2beb3b073f2b
-  };
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '62e2b222311f2beb3b073f2b',
+//   };
 
-  next();
-});
+//   next();
+// });
+
+app.post('/signup', createUser);
+app.post('/signin', login);
+
+app.use(auth);
 
 app.use('/cards', routesCards); // запускаем
 app.use('/users', routesUsers); // запускаем
+
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Неправильный путь' });
 });
