@@ -1,4 +1,5 @@
 const Card = require('../models/card');
+// const User = require('../models/user');
 
 const { errorMessageCard } = require('../errors/errors');
 
@@ -16,10 +17,21 @@ module.exports.allCards = (req, res) => {
     .catch((err) => errorMessageCard(err, req, res));
 };
 
+// удаление карточки
 module.exports.idCards = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
-    .orFail(new Error('NonExistentCard'))
-    .then((card) => res.send({ data: card }))
+  // определение создаткля карточки
+  // const { _id } = req.user;
+  Card.findById(req.params.id)
+    .then((card) => {
+      if (card.owner._id !== req.user._id) {
+        throw new Error('NonisOwnerCard');
+      }
+    })
+    .then(() => {
+      Card.findByIdAndRemove(req.params.id)
+        .orFail(new Error('NonExistentCard'))
+        .then((card) => res.send({ data: card }));
+    })
     .catch((err) => errorMessageCard(err, req, res));
 };
 

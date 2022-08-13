@@ -11,8 +11,8 @@ const { meUsers } = require('../controllers/users');
 
 routesUsers.get('/', allUsers);
 
-routesUsers.get('/:id', idUsers);
 routesUsers.get('/me', meUsers);
+routesUsers.get('/:id', idUsers);
 
 routesUsers.patch('/me', updateUsers);
 routesUsers.patch('/me/avatar', updateAvatarUsers);

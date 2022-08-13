@@ -47,11 +47,15 @@ module.exports.errorMessageCard = (err, req, res) => {
         .status(ERROR_ID)
         .send({ message: 'Передан несуществующий _id карточки.' });
       break;
-
+    case 'NonisOwnerCard':
+      res
+        .status(ERROR_ID)
+        .send({ message: 'Карточку может удалить только хозяим карточки' });
+      break;
     default:
       res.status(500).send({ message: 'Произошла ошибка' });
       break;
   }
 };
 
-// module.exports = errorMessageCard;
+// module.exports = errorMessageCard;  NonisOwnerCard
