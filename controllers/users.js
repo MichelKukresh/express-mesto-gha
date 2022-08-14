@@ -18,7 +18,6 @@ module.exports.createUser = (req, res) => {
         about: u.about,
         avatar: u.avatar,
         email: u.email,
-        password: u.password,
       })).catch((err) => errorMessageUser(err, req, res))));
 };
 

@@ -37,12 +37,15 @@ app.use(express.json());
 app.use(limiter);
 app.use(helmet());
 
+// const regEx= /[-a-zA-Z0-9@:%_\+.~#?&\/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&\/=]*)?/gi;
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(/[-a-zA-Z0-9@:%_+.~#?&/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&/=]*)?/),
   }).unknown(true),
 }), createUser);
 
@@ -66,16 +69,3 @@ app.use('*', (req, res) => {
 app.listen(PORT, () => {
   // console.log(`App listening on port ${PORT}`);
 });
-
-// router.delete('/:postId', celebrate({
-//   // валидируем параметры
-//   params: Joi.object().keys({
-//     postId: Joi.string().alphanum().length(24),
-//   }),
-//   headers: Joi.object().keys({
-//     // валидируем заголовки
-//   }),
-//   query: Joi.object().keys({
-//     // валидируем query
-//   }),
-// }), deletePost);
