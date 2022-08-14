@@ -20,9 +20,11 @@ module.exports.allCards = (req, res) => {
 // удаление карточки
 module.exports.idCards = (req, res) => {
   // определение создаткля карточки
-  // const { _id } = req.user;
   Card.findById(req.params.id)
     .then((card) => {
+      if (!card) {
+        throw new Error('NonExistentCard');
+      }
       if (card.owner._id !== req.user._id) {
         throw new Error('NonisOwnerCard');
       }

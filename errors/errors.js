@@ -1,6 +1,7 @@
 const ERROR_CODE = 400;
 const ERROR_ID = 404;
 const ERROR_REG = 409;
+const ERROR_OWNER = 403;
 
 module.exports.errorMessageUser = (err, req, res, messageErr = 'пользователя') => {
   let errMessage = '';
@@ -61,7 +62,7 @@ module.exports.errorMessageCard = (err, req, res) => {
       break;
     case 'NonisOwnerCard':
       res
-        .status(ERROR_ID)
+        .status(ERROR_OWNER)
         .send({ message: 'Карточку может удалить только хозяим карточки' });
       break;
     default:
@@ -70,4 +71,4 @@ module.exports.errorMessageCard = (err, req, res) => {
   }
 };
 
-// module.exports = errorMessageCard;  NonisOwnerCard
+// module.exports = errorMessageCard;  NonisOwnerCard IncorrectCardNumber

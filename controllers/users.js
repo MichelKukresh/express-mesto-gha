@@ -83,6 +83,7 @@ module.exports.meUsers = (req, res) => {
     .orFail(new Error('NonExistentUser'))
     .then((u) => res.send({
       _id: u[0]._id,
+      email: u[0].email,
       name: u[0].name,
       about: u[0].about,
       avatar: u[0].avatar,
