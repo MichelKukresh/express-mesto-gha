@@ -59,8 +59,6 @@ module.exports.updateAvatarUsers = (req, res) => {
     .catch((err) => errorMessageUser(err, req, res, 'аватара'));
 };
 
-// const User = require('../models/user');
-
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
