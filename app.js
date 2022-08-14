@@ -58,7 +58,13 @@ app.post('/signin', celebrate({
 
 app.use(auth);
 
-app.use('/cards', routesCards); // запускаем
+app.use('/cards', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    link: Joi.string().regex(/[-a-zA-Z0-9@:%_+.~#?&/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&/=]*)?/),
+  }).unknown(true),
+}), routesCards); // запускаем
+
 app.use('/users', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email(),
