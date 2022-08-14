@@ -36,7 +36,6 @@ app.use(express.json());
 // используем устанавливаем лимитер для исключения DoS атак
 app.use(limiter);
 app.use(helmet());
-app.use(errors()); // обработчик ошибок celebrate
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
@@ -53,6 +52,7 @@ app.post('/signin', celebrate({
     password: Joi.string().required().min(8),
   }).unknown(true),
 }), login);
+app.use(errors()); // обработчик ошибок celebrate
 
 app.use(auth);
 
