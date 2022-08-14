@@ -1,10 +1,17 @@
 const ERROR_CODE = 400;
 const ERROR_ID = 404;
+const ERROR_REG = 409;
 
 module.exports.errorMessageUser = (err, req, res, messageErr = 'пользователя') => {
-  const errMessage1 = err.name === 'Error' ? err.message : err.name; // для orFail, так как у них Error не отличается, исравнивать можно по mesage
+  let errMessage = '';
+  if (err.code === 11000) {
+    errMessage = 'TheUserAlreadyExists';
+  } else {
+    const message = err.name === 'Error' ? err.message : err.name; // для orFail, так как у них Error не отличается, исравнивать можно по mesage
+    errMessage = message;
+  }
 
-  switch (errMessage1) {
+  switch (errMessage) {
     case 'ValidationError':
       res.status(ERROR_CODE).send({
         message: `Переданы некорректные данные при создании ${messageErr}`,
@@ -19,6 +26,11 @@ module.exports.errorMessageUser = (err, req, res, messageErr = 'пользова
       res
         .status(ERROR_ID)
         .send({ message: 'Пользователь по указанному id не найден' });
+      break;
+    case 'TheUserAlreadyExists':
+      res
+        .status(ERROR_REG)
+        .send({ message: 'Пользователь уже существует' });
       break;
 
     default:
