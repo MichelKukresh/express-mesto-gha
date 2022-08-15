@@ -79,6 +79,23 @@ app.use('*', (req, res) => {
   res.status(404).send({ message: 'Неправильный путь' });
 });
 
+// централизованный обработчик ошибок
+app.use((err, req, res, next) => {
+
+  console.log("!!!!!!!!!!!!!");
+  console.log(err.message);
+  console.log(err.statusCode);
+  console.log("!!!!!!!!!!!!!");
+  // если у ошибки нет статуса, выставляем 500
+  const { statusCode = 500, message } = err;
+  res.status(err.statusCode).send({
+    // проверяем статус и выставляем сообщение в зависимости от него
+    message: statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : message,
+  });
+});
+
 app.listen(PORT, () => {
   // console.log(`App listening on port ${PORT}`);
 });

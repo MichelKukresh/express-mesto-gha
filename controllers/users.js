@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt'); // npm i bcrypt
 const jwt = require('jsonwebtoken'); // npm i jsonwebtoken
 const User = require('../models/user');
 const { errorMessageUser } = require('../errors/errors');
+const ErrorAuthorized = require('../errors/ErrorAuthorized');
+const ErrorNotFound = require('../errors/ErrorNotFound');
 
 module.exports.createUser = (req, res) => {
   const {
@@ -27,16 +29,16 @@ module.exports.allUsers = (req, res) => {
     .catch((err) => errorMessageUser(err, req, res));
 };
 
-module.exports.idUsers = (req, res) => {
+module.exports.idUsers = (req, res, next) => {
   const { id } = req.params;
   User.find({ _id: id })
-    .orFail(new Error('NonExistentUser'))
+    .orFail(new ErrorNotFound('Пользователь по указанному id не найден'))
     .then((u) => res.send({
       _id: u[0]._id,
       name: u[0].name,
       about: u[0].about,
       avatar: u[0].avatar,
-    })).catch((err) => errorMessageUser(err, req, res));
+    })).catch((err) => next(err));
 };
 
 module.exports.updateUsers = (req, res) => {
@@ -59,31 +61,30 @@ module.exports.updateAvatarUsers = (req, res) => {
     .catch((err) => errorMessageUser(err, req, res, 'аватара'));
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' }); // создадим токен
       res.send({ token }); // вернём токен
-    })
-    .catch((err) => {
-      // ошибка аутентификации
-      res
-        .status(401)
-        .send({ message: err.message });
+    }).catch((err) => {
+      if (err.message === 'Authorized') {
+        next(new ErrorAuthorized('Неправильные почта или пароль'));
+      } else {
+        next(err);
+      }
     });
 };
 
-module.exports.meUsers = (req, res) => {
+module.exports.meUsers = (req, res, next) => {
   const { _id } = req.user;
   User.find({ _id })
-    .orFail(new Error('NonExistentUser'))
+    .orFail(new ErrorNotFound('Пользователь по указанному id не найден'))
     .then((u) => res.send({
       _id: u[0]._id,
       email: u[0].email,
       name: u[0].name,
       about: u[0].about,
       avatar: u[0].avatar,
-    })).catch((err) => errorMessageUser(err, req, res));
+    })).catch((err) => next(err));
 };
