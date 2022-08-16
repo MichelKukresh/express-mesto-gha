@@ -22,7 +22,7 @@ module.exports.createUser = (req, res, next) => {
       email: u.email,
     })).catch((err) => {
       if (err.code === 11000) {
-        throw new ErrorEmailConflict('Пользователь уже существует');
+        next(new ErrorEmailConflict('Пользователь уже существует'));
       } else {
         next(err);
       }
