@@ -1,7 +1,7 @@
 const Card = require('../models/card');
 // const User = require('../models/user');
 
-const { errorMessageCard } = require('../errors/errors');
+// const { errorMessageCard } = require('../errors/errors');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 
 module.exports.createCard = (req, res, next) => {

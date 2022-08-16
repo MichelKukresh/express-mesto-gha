@@ -67,12 +67,7 @@ app.use('*', (req, res) => {
 });
 
 // централизованный обработчик ошибок
-app.use((err, req, res, next) => {
-
-  console.log("!!!!!!!!!!!!!");
-  console.log(err.message);
-  console.log(err.statusCode);
-  console.log("!!!!!!!!!!!!!");
+app.use((err, req, res) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
   res.status(err.statusCode).send({
