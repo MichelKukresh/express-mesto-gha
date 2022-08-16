@@ -1,10 +1,10 @@
 const bcrypt = require('bcrypt'); // npm i bcrypt
 const jwt = require('jsonwebtoken'); // npm i jsonwebtoken
 const User = require('../models/user');
-// const { errorMessageUser } = require('../errors/errors');
 const ErrorAuthorized = require('../errors/ErrorAuthorized');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const ErrorValidationAndCast = require('../errors/ErrorValidationAndCast');
+const ErrorEmailConflict = require('../errors/ErrorEmailConflict');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -20,7 +20,13 @@ module.exports.createUser = (req, res, next) => {
       about: u.about,
       avatar: u.avatar,
       email: u.email,
-    })).catch((err) => next(err));
+    })).catch((err) => {
+      if (err.code === 11000) {
+        throw new ErrorEmailConflict('Пользователь уже существует');
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.allUsers = (req, res, next) => {

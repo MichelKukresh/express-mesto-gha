@@ -1,8 +1,7 @@
 const Card = require('../models/card');
-// const User = require('../models/user');
 
-// const { errorMessageCard } = require('../errors/errors');
 const ErrorNotFound = require('../errors/ErrorNotFound');
+const ErrorAuthorizedButForbidden = require('../errors/ErrorAuthorizedButForbidden');
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -27,7 +26,7 @@ module.exports.idCards = (req, res, next) => {
         throw new ErrorNotFound('Передан несуществующий _id карточки.');
       }
       if (card.owner._id !== req.user._id) {
-        throw new ErrorNotFound('Передан несуществующий _id карточки.');
+        throw new ErrorAuthorizedButForbidden('Удаление карточки чужого пользователя запрещено.');
       }
     })
     .then(() => {

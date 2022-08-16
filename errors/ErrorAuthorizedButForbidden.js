@@ -4,4 +4,5 @@ class ErrorAuthorizedButForbidden extends Error {
     this.statusCode = 403;
   }
 }
+
 module.exports = ErrorAuthorizedButForbidden;

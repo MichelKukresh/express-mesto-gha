@@ -62,7 +62,6 @@ userSchema.statics.findUserByCredentials = function f(email, password) {
           if (!matched) {
             return Promise.reject(new Error('Authorized'));
           }
-
           return user; // теперь user доступен
         });
     });
