@@ -18,6 +18,8 @@ const routesCards = require('./routes/cards');
 const routesUsers = require('./routes/users');
 const auth = require('./middlewares/auth');
 const { regexLink } = require('./util/utilConst');
+const ErrorNotFound = require('./errors/ErrorNotFound');
+const centralizedErrorHandler = require('./middlewares/centralizedErrorHandler');
 
 const app = express();
 
@@ -41,7 +43,7 @@ app.use(helmet());
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().regex(regexLink),
@@ -51,7 +53,7 @@ app.post('/signup', celebrate({
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 
@@ -63,23 +65,12 @@ app.use('/users', routesUsers);
 
 app.use(errors()); // обработчик ошибок celebrate
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Неправильный путь' });
+app.use('*', (req, res, next) => {
+  next(new ErrorNotFound('Неправильный путь'));
 });
 
 // централизованный обработчик ошибок
-app.use((err, req, res, next) => {
-  // console.log(` проверка ${err}`);
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-  res.status(err.statusCode).send({
-    // проверяем статус и выставляем сообщение в зависимости от него
-    message: statusCode === 500
-      ? 'На сервере произошла ошибка'
-      : message,
-  });
-  next();
-});
+app.use(centralizedErrorHandler);
 
 app.listen(PORT, () => {
   // console.log(`App listening on port ${PORT}`);
