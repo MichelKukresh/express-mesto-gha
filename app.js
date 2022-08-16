@@ -44,34 +44,21 @@ app.post('/signup', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().regex(/[-a-zA-Z0-9@:%_+.~#?&/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&/=]*)?/),
-  }).unknown(true),
+  }),
 }), createUser);
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
-  }).unknown(true),
+  }),
 }), login);
 
 app.use(auth);
 
-app.use('/cards', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    link: Joi.string().regex(/[-a-zA-Z0-9@:%_+.~#?&/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&/=]*)?/),
-  }).unknown(true),
-}), routesCards); // запускаем
+app.use('/cards', routesCards); // запускаем
 
-app.use('/users', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().email(),
-    password: Joi.string().min(8),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/[-a-zA-Z0-9@:%_+.~#?&/=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&/=]*)?/),
-  }).unknown(true),
-}), routesUsers);
+app.use('/users', routesUsers);
 
 app.use(errors()); // обработчик ошибок celebrate
 

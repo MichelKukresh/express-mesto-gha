@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const validator = require('validator'); // npm i validator
+// const { default: isURL } = require('validator/lib/isurl');
 
 const cardsSchema = new mongoose.Schema({
   name: {
@@ -12,7 +14,12 @@ const cardsSchema = new mongoose.Schema({
   link: {
     // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
-    required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
+    required: true,
+    validate(value) {
+      if (!validator.isURL(value)) {
+        throw new Error('Invalid Url');
+      }
+    }, // оно должно быть у каждого пользователя, так что имя — обязательное поле
   },
   owner: {
     // у пользователя есть имя — опишем требования к имени в схеме:

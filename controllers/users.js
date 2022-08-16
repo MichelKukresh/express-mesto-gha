@@ -1,11 +1,12 @@
 const bcrypt = require('bcrypt'); // npm i bcrypt
 const jwt = require('jsonwebtoken'); // npm i jsonwebtoken
 const User = require('../models/user');
-const { errorMessageUser } = require('../errors/errors');
+// const { errorMessageUser } = require('../errors/errors');
 const ErrorAuthorized = require('../errors/ErrorAuthorized');
 const ErrorNotFound = require('../errors/ErrorNotFound');
+const ErrorValidationAndCast = require('../errors/ErrorValidationAndCast');
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -13,20 +14,19 @@ module.exports.createUser = (req, res) => {
   bcrypt.hash(password, 10)
     .then((hash) => (User.create({
       name, about, avatar, email, password: hash,
-    })
-      .then((u) => res.send({
-        _id: u._id,
-        name: u.name,
-        about: u.about,
-        avatar: u.avatar,
-        email: u.email,
-      })).catch((err) => errorMessageUser(err, req, res))));
+    }))).then((u) => res.send({
+      _id: u._id,
+      name: u.name,
+      about: u.about,
+      avatar: u.avatar,
+      email: u.email,
+    })).catch((err) => next(err));
 };
 
-module.exports.allUsers = (req, res) => {
+module.exports.allUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch((err) => errorMessageUser(err, req, res));
+    .catch((err) => next(err));
 };
 
 module.exports.idUsers = (req, res, next) => {
@@ -41,24 +41,36 @@ module.exports.idUsers = (req, res, next) => {
     })).catch((err) => next(err));
 };
 
-module.exports.updateUsers = (req, res) => {
+module.exports.updateUsers = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { name: req.body.name, about: req.body.about },
     { runValidators: true, new: true },
   )
     .then((user) => res.send(user))
-    .catch((err) => errorMessageUser(err, req, res));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ErrorValidationAndCast('Переданы некорректные данные при создании аватара'));
+      } else {
+        next(err);
+      }
+    });
 };
 
-module.exports.updateAvatarUsers = (req, res) => {
+module.exports.updateAvatarUsers = (req, res, next) => {
   User.findByIdAndUpdate(
     req.user._id,
     { avatar: req.body.avatar },
     { runValidators: true, new: true },
   )
     .then((user) => res.send(user))
-    .catch((err) => errorMessageUser(err, req, res, 'аватара'));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ErrorValidationAndCast('Переданы некорректные данные при создании аватара'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.login = (req, res, next) => {

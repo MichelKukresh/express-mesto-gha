@@ -24,7 +24,11 @@ const userSchema = new mongoose.Schema({
   avatar: {
     // у пользователя есть имя — опишем требования к имени в схеме:
     type: String, // имя — это строка
-    // required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
+    validate(value) {
+      if (!validator.isURL(value)) {
+        throw new Error('Invalid Url');
+      }
+    },
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
 
