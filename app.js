@@ -12,6 +12,8 @@ const helmet = require('helmet');
 
 const mongoose = require('mongoose');
 
+// logger
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { createUser, login } = require('./controllers/users');
 
 const routesCards = require('./routes/cards');
@@ -40,6 +42,9 @@ app.use(express.json());
 app.use(limiter);
 app.use(helmet());
 
+// !!важно до роутов
+app.use(requestLogger); // подключаем логгер запросов
+
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
@@ -62,6 +67,9 @@ app.use(auth);
 app.use('/cards', routesCards); // запускаем
 
 app.use('/users', routesUsers);
+
+// !!вадно до обработчика ошибок, но после маршрутов
+app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors()); // обработчик ошибок celebrate
 
